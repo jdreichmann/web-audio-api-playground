@@ -61,3 +61,50 @@ const getNewOscillator = (ctx, type = 'sine', label = 'Untitled') => {
   addElement(container)
   osciNode.start()
 }
+
+class MoveableAudioSource {
+  constructor(audioContext) {
+    this.audioContext = audioContext
+    this.gain = audioContext.createGain()
+    this.gain.connect(this.audioContext.destination)
+    this.oscillator = audioContext.createOscillator()
+    this.oscillator.connect(this.gain)
+  }
+
+  _createContainer() {
+    const container = document.createElement('div')
+    container.appendChild(this._createFrequencySlider())
+    container.appendChild(this._createGainSlider())
+    return ``
+  }
+
+  _createFrequencySelector() {
+    const label = document.createElement('label')
+    const freq = document.createElement('input')
+    freq.setAttribute('type', 'number')
+    freq.min = 0
+    freq.max = 50000
+    freq.addEventListener('change', event => {
+      this.oscillator.frequency.value = freq.value
+    })
+    label.appendChild(document.createTextNode('Freq: '))
+    label.appendChild(freq)
+    return label
+  }
+
+  _createGainSlider() {
+    const label = document.createElement('label')
+    const slider = document.createElement('input')
+    slider.setAttribute('type', 'range')
+    slider.min = 0
+    slider.max = 1
+    slider.defaultValue = 0.45
+    slider.step = 0.01
+    slider.addEventListener('change', event => {
+      this.gain.gain.value = slider.value
+    })
+    label.appendChild(document.createTextNode('Gain: '))
+    label.appendChild(slider)
+    return label
+  }
+}
